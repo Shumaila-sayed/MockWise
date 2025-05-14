@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import DisplayTechIcons from './DisplayTechIcons';
 
+
 const InterviewCard = ({
 	id,
 	userId,
