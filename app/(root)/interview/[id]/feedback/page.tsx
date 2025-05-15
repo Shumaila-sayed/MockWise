@@ -1,27 +1,26 @@
-import { Button } from '@/components/ui/button';
-import { getCurrentUser } from '@/lib/actions/auth.action';
-import {
-	getFeedbackByInterviewId,
-	getInterviewsById,
-} from '@/lib/actions/general.action';
 import dayjs from 'dayjs';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
-const Page = async ({ params }: RouteParams) => {
+import {
+	getFeedbackByInterviewId,
+	getInterviewById,
+} from '@/lib/actions/general.action';
+import { Button } from '@/components/ui/button';
+import { getCurrentUser } from '@/lib/actions/auth.action';
+
+const Feedback = async ({ params }: RouteParams) => {
 	const { id } = await params;
 	const user = await getCurrentUser();
 
-	const interview = await getInterviewsById(id);
+	const interview = await getInterviewById(id);
 	if (!interview) redirect('/');
 
 	const feedback = await getFeedbackByInterviewId({
 		interviewId: id,
 		userId: user?.id!,
 	});
-
-	console.log(feedback);
 
 	return (
 		<section className='section-feedback'>
@@ -32,8 +31,9 @@ const Page = async ({ params }: RouteParams) => {
 				</h1>
 			</div>
 
-			<div className='flex flex-row justify-center'>
+			<div className='flex flex-row justify-center '>
 				<div className='flex flex-row gap-5'>
+					{/* Overall Impression */}
 					<div className='flex flex-row gap-2 items-center'>
 						<Image
 							src='/star.svg'
@@ -42,13 +42,15 @@ const Page = async ({ params }: RouteParams) => {
 							alt='star'
 						/>
 						<p>
-							Overall impression:{' '}
+							Overall Impression:{' '}
 							<span className='text-primary-200 font-bold'>
 								{feedback?.totalScore}
-							</span>{' '}
+							</span>
 							/100
 						</p>
 					</div>
+
+					{/* Date */}
 					<div className='flex flex-row gap-2'>
 						<Image
 							src='/calendar.svg'
@@ -68,6 +70,8 @@ const Page = async ({ params }: RouteParams) => {
 			<hr />
 
 			<p>{feedback?.finalAssessment}</p>
+
+			{/* Interview Breakdown */}
 			<div className='flex flex-col gap-4'>
 				<h2>Breakdown of the Interview:</h2>
 				{feedback?.categoryScores?.map((category, index) => (
@@ -108,8 +112,8 @@ const Page = async ({ params }: RouteParams) => {
 							Back to dashboard
 						</p>
 					</Link>
-                </Button>
-                
+				</Button>
+
 				<Button className='btn-primary flex-1'>
 					<Link
 						href={`/interview/${id}`}
@@ -125,4 +129,4 @@ const Page = async ({ params }: RouteParams) => {
 	);
 };
 
-export default Page;
+export default Feedback;
